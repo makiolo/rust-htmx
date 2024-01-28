@@ -3,6 +3,7 @@ use axum::{
     Router
 };
 use askama::Template;
+use maud::{html, Markup};
 // use lazy_static::lazy_static;
 
 
@@ -18,6 +19,13 @@ async fn handle_main() -> MyTemplate {
         name: "Ricardo", 
         title: "This is test of HTMX"
     };
+}
+
+
+async fn handle_maud() -> Markup {
+    html! {
+        h1 { "Hello world Maud!" }
+    }
 }
 
 // lazy_static! {
@@ -54,6 +62,7 @@ async fn main() {
 
     let app = Router::new()
         .route("/", get(handle_main))
+        .route("/maud", get(handle_maud))
         .route("/table", get(handle_table));
 
     // run our app with hyper, listening globally on port 3000

@@ -19,3 +19,4 @@ cargo add tracing-subscriber --features env-filter
 cargo add log 
 
 cargo add lazy_static 
+cargo add maud --features axum 
