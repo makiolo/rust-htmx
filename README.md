@@ -21,3 +21,5 @@ cargo install cargo-watch
 - cargo add log 
 - cargo add lazy_static 
 - cargo add maud --features axum 
+cargo add sqlx --features runtime-tokio --features sqlite 
+cargo add dotenv 
