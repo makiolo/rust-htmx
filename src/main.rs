@@ -25,7 +25,7 @@ async fn handle_main() -> MyTemplate {
 // }
 
 #[derive(Template)]
-#[template(path="timer.html")]
+#[template(path="elements/timer.html")]
 pub struct Timer {
     pub start : f64,
     pub end : f64,
