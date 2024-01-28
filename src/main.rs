@@ -1,9 +1,16 @@
+mod db;
+mod rest;
+
 use axum::{
     routing::get,
     response::Json,
     Router,
     response::sse::{Event, Sse},
+    Extension,
 };
+use anyhow::Result;
+use sqlx::SqlitePool;
+use sqlx::migrate::Migrator;
 use serde::Serialize;
 use askama::Template;
 use maud::{html, Markup};
@@ -90,19 +97,41 @@ async fn sse_handler(
     )
 }
 
+static MIGRATOR: Migrator = sqlx::migrate!();
+
+
+pub async fn init_db() -> Result<SqlitePool> {
+    let database_url = std::env::var("DATABASE_URL")?;
+    let connection_pool = SqlitePool::connect(&database_url).await?;
+    MIGRATOR.run(&connection_pool).await?;
+    Ok(connection_pool)
+}
+
 #[tokio::main]
-async fn main() {
+async fn main() -> Result<()> {
+
+    // Load environment variables from .env if available
+    dotenv::dotenv().ok();
+
     tracing_subscriber::fmt::init();
+
+    // Initialize the database and obtain a connection pool
+    let connection_pool = init_db().await?;
 
     let app = Router::new()
         .route("/", get(handle_main))
         .route("/maud", get(handle_maud))
         .route("/ajax", get(returns_json))
         .route("/sse", get(sse_handler))
-        .route("/table", get(handle_table));
+        .route("/table", get(handle_table))
+        .nest_service("/rest", rest::books_service())
+        .layer(Extension(connection_pool))
+        ;
 
     // run our app with hyper, listening globally on port 3000
     let listener = tokio::net::TcpListener::bind("0.0.0.0:3000").await.unwrap();
     axum::serve(listener, app).await.unwrap();
+
+    Ok(())
 }
 

@@ -1,6 +1,7 @@
 # Rust + HTMX
 
-Inspired: https://github.com/ThePrimeagen/more-htmx-eploration
+- https://github.com/ThePrimeagen/more-htmx-eploration
+- https://github.com/thebracket/webinar_axumcrud
 
 ## Builds depends
 
@@ -23,3 +24,5 @@ cargo install cargo-watch
 - cargo add maud --features axum 
 cargo add sqlx --features runtime-tokio --features sqlite 
 cargo add dotenv 
+cargo add anyhow 
+cargo add once_cell 
