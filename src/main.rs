@@ -4,7 +4,6 @@ use axum::{
 };
 use askama::Template;
 use maud::{html, Markup};
-// use lazy_static::lazy_static;
 
 
 #[derive(Template)]
@@ -27,10 +26,6 @@ async fn handle_maud() -> Markup {
         h1 { "Hello world Maud!" }
     }
 }
-
-// lazy_static! {
-//     static ref TIME: u8 = 42;
-// }
 
 #[derive(Template)]
 #[template(path="elements/timer.html")]

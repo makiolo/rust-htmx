@@ -1,5 +1,7 @@
 # Rust + HTMX
 
+Inspired: https://github.com/ThePrimeagen/more-htmx-eploration
+
 ## Builds depends
 
 cargo install cargo-watch
