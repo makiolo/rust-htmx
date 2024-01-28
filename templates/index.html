@@ -1,12 +1,11 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <title>Hola mundo</title>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link href="css/style.css" rel="stylesheet">
-  </head>
-  <body>
-    Hola mundo template 123456789
-  </body>
-</html>
+{% extends "base.html" %}
+
+{% block content %}
+{% call super() %}
+Hola {{ name }}
+<br />
+{% include "include.html" %}
+<a href="/table">Table</a><br />
+{% endblock %}
+
+

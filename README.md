@@ -18,3 +18,4 @@ cargo add tracing
 cargo add tracing-subscriber --features env-filter 
 cargo add log 
 
+cargo add lazy_static 

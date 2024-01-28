@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block content %}
+{% call super() %}
+
+Timer table:<br /><br />
+
+{% for i in timers %}
+    <p>Timer: {{ i }}</p>
+{% endfor %} 
+
+<a href="/">Return to Index</a><br />
+
+{% endblock %}
+
