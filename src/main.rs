@@ -1,9 +1,16 @@
 use axum::{
     routing::get,
-    Router
+    response::Json,
+    Router,
+    response::sse::{Event, Sse},
 };
+use serde::Serialize;
 use askama::Template;
 use maud::{html, Markup};
+use axum_extra::{headers, TypedHeader};
+use futures::stream::{self, Stream};
+use std::{convert::Infallible, time::Duration};
+use tokio_stream::StreamExt as _;
 
 
 #[derive(Template)]
@@ -51,6 +58,38 @@ async fn handle_table() -> TimerTable {
     return TimerTable{timers, title: "Hola mundo"};
 }
 
+#[derive(Serialize)]
+struct Hello {
+    name: String,
+}
+
+async fn returns_json() -> Json<Hello> {
+    let hello = Hello {
+        name: String::from("world"),
+    };
+    Json(hello)
+}
+
+async fn sse_handler(
+    TypedHeader(user_agent): TypedHeader<headers::UserAgent>,
+) -> Sse<impl Stream<Item = Result<Event, Infallible>>> {
+    println!("`{}` connected", user_agent.as_str());
+
+    // A `Stream` that repeats an event every second
+    //
+    // You can also create streams from tokio channels using the wrappers in
+    // https://docs.rs/tokio-stream
+    let stream = stream::repeat_with(|| Event::default().data("hi!"))
+        .map(Ok)
+        .throttle(Duration::from_secs(1));
+
+    Sse::new(stream).keep_alive(
+        axum::response::sse::KeepAlive::new()
+            .interval(Duration::from_secs(1))
+            .text("keep-alive-text"),
+    )
+}
+
 #[tokio::main]
 async fn main() {
     tracing_subscriber::fmt::init();
@@ -58,6 +97,8 @@ async fn main() {
     let app = Router::new()
         .route("/", get(handle_main))
         .route("/maud", get(handle_maud))
+        .route("/ajax", get(returns_json))
+        .route("/sse", get(sse_handler))
         .route("/table", get(handle_table));
 
     // run our app with hyper, listening globally on port 3000

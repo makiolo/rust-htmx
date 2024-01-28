@@ -1,5 +1,15 @@
+<div id="resultado"></div>
+
 {% macro print_timer(arg) %}
 Soy timer<br />
-<a data-hx-post="/click">Click Me {{ arg }} !</a><br/>
+<span hx-get="/ajax"
+    hx-trigger="load delay:1s"
+    hx-target="this"
+    hx-swap="innerHTML"
+>
+    Click Me {{ arg }}!
+</span>
+<br/>
+
 {% endmacro %}
 
