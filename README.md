@@ -3,6 +3,13 @@
 - https://github.com/ThePrimeagen/more-htmx-eploration
 - https://github.com/thebracket/webinar_axumcrud
 
+## Notes
+
+struct internal --> to askama (template html/css)
+struct internal --> to database (diesel ORM)
+struct internal --> to public proto messages (for let RPC)
+method internal --> to public proto service (for let RPC)
+
 ## Builds depends
 
 cargo install cargo-watch
@@ -22,7 +29,7 @@ cargo install cargo-watch
 - cargo add log 
 - cargo add lazy_static 
 - cargo add maud --features axum 
-cargo add sqlx --features runtime-tokio --features sqlite 
-cargo add dotenv 
-cargo add anyhow 
-cargo add once_cell 
+- cargo add sqlx --features runtime-tokio --features sqlite 
+- cargo add dotenv 
+- cargo add anyhow 
+- cargo add once_cell 
