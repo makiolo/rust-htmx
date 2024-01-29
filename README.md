@@ -5,10 +5,10 @@
 
 ## Notes
 
-struct internal --> to askama (template html/css)
-struct internal --> to database (diesel ORM)
-struct internal --> to public proto messages (for let RPC)
-method internal --> to public proto service (for let RPC)
+- struct internal --> to askama (template html/css)
+- struct internal --> to database (diesel ORM)
+- struct internal --> to public proto messages (for let RPC)
+- method internal --> to public proto service (for let RPC)
 
 ## Builds depends
 
