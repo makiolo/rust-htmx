@@ -116,7 +116,7 @@ pub async fn update_book(connection_pool: &SqlitePool, book: &Book) -> Result<()
     sqlx::query("UPDATE books SET title=$1, author=$2 WHERE id=$3")
         .bind(&book.title)
         .bind(&book.author)
-        .bind(&book.id)
+        .bind(book.id)
         .execute(connection_pool)
         .await?;
     CACHE.invalidate().await;

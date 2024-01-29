@@ -28,10 +28,10 @@ pub struct MyTemplate {
 }
 
 async fn handle_main() -> MyTemplate {
-    return MyTemplate{
+    MyTemplate{
         name: "Ricardo", 
         title: "This is test of HTMX"
-    };
+    }
 }
 
 
@@ -59,10 +59,8 @@ pub struct TimerTable {
 async fn handle_table() -> TimerTable {
     let t1 = Timer{start: 0.0, end: 10.0, step: 1.0};
     let t2 = Timer{start: 100.0, end: 1000.0, step: 10.0};
-    let mut timers = Vec::new();
-    timers.push(t1);
-    timers.push(t2);
-    return TimerTable{timers, title: "Hola mundo"};
+    let timers = vec![t1, t2];
+    TimerTable{timers, title: "Hola mundo"}
 }
 
 #[derive(Serialize)]
