@@ -3,6 +3,13 @@
 - https://github.com/ThePrimeagen/more-htmx-eploration
 - https://github.com/thebracket/webinar_axumcrud
 
+## Notes
+
+- struct internal --> to askama (template html/css)
+- struct internal --> to database (diesel ORM)
+- struct internal --> to public proto messages (for let RPC)
+- method internal --> to public proto service (for let RPC)
+
 ## Builds depends
 
 cargo install cargo-watch
@@ -38,6 +45,7 @@ instalar diesel_cli con la feature de sqlite
 - cargo add log 
 - cargo add lazy_static 
 - cargo add maud --features axum 
+<<<<<<< HEAD
 cargo add sqlx --features runtime-tokio --features sqlite 
 cargo add dotenv 
 cargo add anyhow 
@@ -51,3 +59,9 @@ diesel migration run
 
 cargo add rusqlite 
 cargo add diesel_migrations 
+=======
+- cargo add sqlx --features runtime-tokio --features sqlite 
+- cargo add dotenv 
+- cargo add anyhow 
+- cargo add once_cell 
+>>>>>>> 0f2ecf3fc1b088d3ef1d0e2876267433d9493a6b
