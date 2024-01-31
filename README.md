@@ -45,23 +45,19 @@ instalar diesel_cli con la feature de sqlite
 - cargo add log 
 - cargo add lazy_static 
 - cargo add maud --features axum 
-<<<<<<< HEAD
-cargo add sqlx --features runtime-tokio --features sqlite 
-cargo add dotenv 
-cargo add anyhow 
-cargo add once_cell 
-cargo add diesel --features sqlite 
-cargo install diesel_cli --no-default-features --features sqlite 
-DATABASE_URL="sqlite://sqlite.db" > .env
-diesel setup 
-diesel migration generate create_posts 
-diesel migration run 
-
-cargo add rusqlite 
-cargo add diesel_migrations 
-=======
-- cargo add sqlx --features runtime-tokio --features sqlite 
+. cargo add sqlx --features runtime-tokio --features sqlite 
 - cargo add dotenv 
 - cargo add anyhow 
 - cargo add once_cell 
->>>>>>> 0f2ecf3fc1b088d3ef1d0e2876267433d9493a6b
+- cargo add dotenv 
+- cargo add anyhow 
+- cargo add once_cell 
+- cargo add diesel --features sqlite 
+- cargo install diesel_cli --no-default-features --features sqlite 
+- DATABASE_URL="sqlite://sqlite.db" > .env
+- diesel setup 
+- diesel migration generate create_posts 
+- diesel migration run 
+- cargo add rusqlite 
+- cargo add diesel_migrations 
+
