@@ -62,3 +62,6 @@ instalar diesel_cli con la feature de sqlite
 - cargo add rusqlite 
 - cargo add diesel_migrations 
 
+cargo add deadpool-diesel --features sqlite 
+cargo add uuid7 --features serde 
+cargo add uuid --features serde --features v4 --features fast-rng 
