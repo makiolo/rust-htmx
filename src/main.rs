@@ -1,120 +1,70 @@
-mod db;
-mod rest;
+pub mod db;
+pub mod rest;
+pub mod models;
+pub mod views;
+pub mod connection;
+pub mod schema;
+pub mod repository;
 
 use axum::{
     routing::get,
-    response::Json,
     Router,
-    response::sse::{Event, Sse},
-    Extension,
+    // Extension,
 };
 use anyhow::Result;
-use sqlx::SqlitePool;
-use sqlx::migrate::Migrator;
-use serde::Serialize;
-use askama::Template;
-use maud::{html, Markup};
-use axum_extra::{headers, TypedHeader};
-use futures::stream::{self, Stream};
-use std::{convert::Infallible, time::Duration};
-use tokio_stream::StreamExt as _;
+// use sqlx::SqlitePool;
+// use sqlx::migrate::Migrator;
+use views::{handle_main, handle_maud, returns_json, sse_handler, handle_table};
+use self::models::*;
+use diesel::prelude::*;
+use diesel_migrations::{embed_migrations, EmbeddedMigrations};
 
 
-#[derive(Template)]
-#[template(path = "index.html")]
-pub struct MyTemplate {
-    name: &'static str,
-    title: &'static str,
-}
-
-async fn handle_main() -> MyTemplate {
-    MyTemplate{
-        name: "Ricardo", 
-        title: "This is test of HTMX"
-    }
-}
+// Define embedded database migrations
+pub const MIGRATIONS: EmbeddedMigrations = embed_migrations!("migrations/");
 
 
-async fn handle_maud() -> Markup {
-    html! {
-        h1 { "Hello world Maud!" }
-    }
-}
-
-#[derive(Template)]
-#[template(path="elements/timer.html")]
-pub struct Timer {
-    pub start : f64,
-    pub end : f64,
-    pub step : f64,
-}
-
-#[derive(Template)]
-#[template(path="timer_table.html")]
-pub struct TimerTable {
-    timers: Vec<Timer>,
-    title: &'static str,
-}
-
-async fn handle_table() -> TimerTable {
-    let t1 = Timer{start: 0.0, end: 10.0, step: 1.0};
-    let t2 = Timer{start: 100.0, end: 1000.0, step: 10.0};
-    let timers = vec![t1, t2];
-    TimerTable{timers, title: "Hola mundo"}
-}
-
-#[derive(Serialize)]
-struct Hello {
-    name: String,
-}
-
-async fn returns_json() -> Json<Hello> {
-    let hello = Hello {
-        name: String::from("world"),
-    };
-    Json(hello)
-}
-
-async fn sse_handler(
-    TypedHeader(user_agent): TypedHeader<headers::UserAgent>,
-) -> Sse<impl Stream<Item = Result<Event, Infallible>>> {
-    println!("`{}` connected", user_agent.as_str());
-
-    // A `Stream` that repeats an event every second
-    //
-    // You can also create streams from tokio channels using the wrappers in
-    // https://docs.rs/tokio-stream
-    let stream = stream::repeat_with(|| Event::default().data("hi!"))
-        .map(Ok)
-        .throttle(Duration::from_secs(1));
-
-    Sse::new(stream).keep_alive(
-        axum::response::sse::KeepAlive::new()
-            .interval(Duration::from_secs(1))
-            .text("keep-alive-text"),
-    )
-}
-
-static MIGRATOR: Migrator = sqlx::migrate!();
+// static MIGRATOR: Migrator = sqlx::migrate!();
 
 
-pub async fn init_db() -> Result<SqlitePool> {
-    let database_url = std::env::var("DATABASE_URL")?;
-    let connection_pool = SqlitePool::connect(&database_url).await?;
-    MIGRATOR.run(&connection_pool).await?;
-    Ok(connection_pool)
-}
+// pub async fn init_db() -> Result<SqlitePool> {
+//     let database_url = std::env::var("DATABASE_URL")?;
+//     let connection_pool = SqlitePool::connect(&database_url).await?;
+//     MIGRATOR.run(&connection_pool).await?;
+//     Ok(connection_pool)
+// }
 
 #[tokio::main]
 async fn main() -> Result<()> {
 
     // Load environment variables from .env if available
-    dotenv::dotenv().ok();
+    // dotenv::dotenv().ok();
+    //
+    use self::schema::posts::dsl::*;
 
     tracing_subscriber::fmt::init();
 
+    let connection_pool = &mut connection::establish_connection();
+
+    repository::create_post(connection_pool, "hola", "amigo");
+    
+    let results = posts
+        .filter(published.eq(true))
+        .limit(5)
+        .select(Post::as_select())
+        .load(connection_pool)
+        .expect("Error loading posts");
+
+    println!("Displaying {} posts", results.len());
+    for post in results {
+        println!("{}", post.title);
+        println!("-----------\n");
+        println!("{}", post.body);
+        println!("{}", post.published);
+    }
+
     // Initialize the database and obtain a connection pool
-    let connection_pool = init_db().await?;
+    // let connection_pool = init_db().await?;
 
     let app = Router::new()
         .route("/", get(handle_main))
@@ -123,7 +73,7 @@ async fn main() -> Result<()> {
         .route("/sse", get(sse_handler))
         .route("/table", get(handle_table))
         .nest_service("/rest", rest::books_service())
-        .layer(Extension(connection_pool))
+        // .layer(Extension(connection_pool))
         ;
 
     // run our app with hyper, listening globally on port 3000
