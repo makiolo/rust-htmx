@@ -3,6 +3,7 @@
 - https://github.com/ThePrimeagen/more-htmx-eploration
 - https://github.com/thebracket/webinar_axumcrud
 - https://medium.com/@qkpiot/building-a-robust-rust-backend-with-axum-diesel-postgresql-and-ddd-from-concept-to-deployment-b25cf5c65bc8
+- Simple CRUD with Rocket: https://betterprogramming.pub/how-to-write-a-web-app-in-rust-part-2-2da195369fc1
 
 ## Notes
 
